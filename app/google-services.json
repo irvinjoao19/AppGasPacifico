@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "941021851102",
+    "firebase_url": "https://appveritas-8220c.firebaseio.com",
+    "project_id": "appveritas-8220c",
+    "storage_bucket": "appveritas-8220c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:941021851102:android:0ac767e24b10a234",
+        "android_client_info": {
+          "package_name": "com.quavii.dsige.lectura"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "941021851102-agf2s9pdijkgda8v6bip79d5f9l3jnp2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.quavii.dsige.lectura",
+            "certificate_hash": "048636545d0acf24b76c3fd4e9f46eccc3b0a915"
+          }
+        },
+        {
+          "client_id": "941021851102-v3n5rl7t6q9a8fum7ifpm4lbl9vmhres.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJTSu3oC9gclpkwXJo0PXv0OxALeu4OU0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "941021851102-v3n5rl7t6q9a8fum7ifpm4lbl9vmhres.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

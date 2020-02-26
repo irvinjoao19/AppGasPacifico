@@ -1,0 +1,59 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--<item name="android:fontFamily">@font/font_veritas</item>-->
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="TextInputLayoutColor" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+
+        <item name="hintTextColor">?attr/colorPrimary</item>
+
+        <item name="android:textColorHint">@color/colorPrimary</item>
+
+        <item name="boxStrokeColor">@color/colorPrimary</item>
+
+        <!--<item name="counterTextColor">@color/colorPrimary</item>-->
+        <!--<item name="counterOverflowTextColor">@color/colorPrimary</item>-->
+        <!--<item name="errorTextColor">@color/colorPrimary</item>-->
+        <!--<item name="helperTextTextColor">@color/colorPrimary</item>-->
+        <!--&lt;!&ndash; The color of the label when it is collapsed and the text field is active &ndash;&gt;-->
+
+        <!--&lt;!&ndash; The color of the label in all other text field states (such as resting and disabled) &ndash;&gt;-->
+
+
+        <!--<item name="boxStrokeColor">@color/colorPrimary</item>-->
+        <!--<item name="colorControlNormal">@color/colorPrimary</item>-->
+
+
+    </style>
+
+    <!--<style name="TextInputLayoutColor" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">-->
+    <!--<item name="boxStrokeColor">@color/colorYellow</item>-->
+    <!--<item name="colorControlNormal">@color/colorYellow</item>-->
+    <!--</style>-->
+
+    <style name="AppTheme.EditTextError" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorRed</item>
+        <item name="android:textSize">@color/colorRed</item>
+    </style>
+
+    <style name="Button" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">@color/colorWhite</item>
+    </style>
+
+    <style name="ButtonInverse" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorWhite</item>
+        <item name="android:textColorPrimary">@color/colorBlack</item>
+    </style>
+
+</resources>

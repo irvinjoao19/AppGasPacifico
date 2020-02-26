@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector>
+    <plugin id="intel-xdk-custom-sound-installer-test" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0">
+        <platform name="android">
+            <source-file src="notification.mp3" target-dir="res/raw" />
+        </platform>
+    </plugin>
+</selector>

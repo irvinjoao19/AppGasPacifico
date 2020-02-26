@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.quavii.dsige.lectura"
+    android:versionCode="1"
+    android:versionName="1.0"
+    tools:ignore="GradleOverrides">
+
+    <uses-feature android:name="android.hardware.location.gps" />
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <application
+        android:name=".data.ApplicationRealm"
+        android:allowBackup="true"
+        android:allowClearUserData="true"
+        android:fullBackupContent="true"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        android:vmSafeMode="true"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:targetApi="m">
+        <service
+            android:name=".ui.services.SendRepartoServices"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity android:name=".ui.activities.ListClientsActivity" />
+        <activity android:name=".ui.activities.BigClientsActivity" />
+        <activity android:name=".ui.activities.FirmRepartoActivity" />
+        <activity android:name=".ui.activities.RepartoReciboFormActivity" />
+        <activity
+            android:name=".ui.activities.MainActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.activities.ReconexionFirmActivity" />
+        <activity android:name=".ui.activities.PendingLocationMapsActivity" />
+        <activity
+            android:name=".ui.activities.MapsActivity"
+            android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".ui.activities.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activities.SuministroActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activities.SuministroAfterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activities.PhotoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activities.ShowPhotoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activities.SendActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activities.SelfiViewPhoto"
+            android:configChanges="screenSize|orientation" />
+        <activity android:name=".ui.activities.SuministroRepartoActivity" />
+        <activity
+            android:name=".ui.activities.SuministroFormRepartoActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".ui.activities.ViewPhoto"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activities.FirmActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.activities.OperariosActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
+
+        <receiver
+            android:name=".ui.broadcast.SyncReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".ui.broadcast.OtherReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".ui.broadcast.DataMovilReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".ui.broadcast.UbicationReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".ui.broadcast.ServicesReceiver"
+            android:enabled="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".ui.services.DistanceService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".ui.services.AlertRepartoSleepService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".ui.services.SendDataMovilService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".ui.services.SendLocationService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".ui.services.SendRegisterService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".ui.services.SyncCortesReconexionesService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name=".Services.SyncCortesReconexionesService" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".ui.services.EnableGpsService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".ui.services.MessagingService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.quavii.dsige.lectura.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+    </application>
+
+</manifest>
