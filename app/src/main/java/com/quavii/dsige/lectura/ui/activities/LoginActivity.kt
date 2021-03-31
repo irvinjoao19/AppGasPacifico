@@ -102,9 +102,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         val login: Login?
         val loginImp: LoginImplementation = LoginOver(realm)
         val migrationImp: MigrationImplementation = MigrationOver(realm)
-        val loginCall = loginInterfaces.getLogin(user, password, Util.getImei(this@LoginActivity), Util.getVersion((this@LoginActivity)), Util.getToken(this@LoginActivity)!!)
+        val loginCall = if (Build.VERSION.SDK_INT >= 29) {
+            loginInterfaces.getLogin(user, password, password, Util.getVersion((this@LoginActivity)), Util.getToken(this@LoginActivity)!!)
+        } else {
+            loginInterfaces.getLogin(user, password, Util.getImei(this@LoginActivity), Util.getVersion((this@LoginActivity)), Util.getToken(this@LoginActivity)!!)
+        }
         try {
-            val response = loginCall.execute()!!
+            val response = loginCall.execute()
             when {
                 response.code() == 200 -> {
                     login = response.body() as Login
@@ -130,21 +134,21 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     @SuppressLint("StaticFieldLeak")
     private inner class EnterMain : AsyncTask<String, Void, String>() {
 
-        private var builder: AlertDialog.Builder? = null
+        lateinit var builder: AlertDialog.Builder
         private var dialog: AlertDialog? = null
 
         override fun onPreExecute() {
             super.onPreExecute()
             builder = AlertDialog.Builder(ContextThemeWrapper(this@LoginActivity, R.style.AppTheme))
             @SuppressLint("InflateParams") val view = LayoutInflater.from(this@LoginActivity).inflate(R.layout.dialog_login, null)
-            builder?.setView(view)
-            dialog = builder?.create()
-            dialog?.setCanceledOnTouchOutside(false)
-            dialog?.show()
+            builder.setView(view)
+            dialog = builder.create()
+            dialog!!.setCanceledOnTouchOutside(false)
+            dialog!!.show()
         }
 
         override fun doInBackground(vararg string: String): String? {
-            var result: String? = null
+            var result: String?
             val user = string[0]
             val password = string[1]
             Realm.getDefaultInstance().use { realm ->
@@ -158,8 +162,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         @SuppressLint("RestrictedApi")
         override fun onPostExecute(s: String?) {
             super.onPostExecute(s)
-            if (dialog!!.isShowing) {
-                dialog!!.dismiss()
+            if (dialog != null) {
+                if (dialog!!.isShowing) {
+                    dialog!!.dismiss()
+                }
             }
             if (s != null) {
                 when (s) {
@@ -181,7 +187,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun messagePermission() {
         val builder = AlertDialog.Builder(ContextThemeWrapper(this@LoginActivity, R.style.AppTheme))
-        val dialog: AlertDialog
 
         builder.setTitle("Permisos Denegados")
         builder.setMessage("Debes de aceptar los permisos para poder acceder al aplicativo.")
@@ -189,7 +194,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             permision()
             dialogInterface.dismiss()
         }
-        dialog = builder.create()
+        val dialog: AlertDialog = builder.create()
         dialog.setCanceledOnTouchOutside(false)
         dialog.setCancelable(false)
         dialog.show()
@@ -202,7 +207,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         val mCall = migrationInterface.getMigration(operarioId, Util.getVersion(this@LoginActivity))
 
         try {
-            val response = mCall.execute()!!
+            val response = mCall.execute()
             if (response.code() == 200) {
                 val migracion: Migration? = response.body() as Migration
                 if (migracion != null) {

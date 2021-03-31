@@ -1,19 +1,15 @@
 package com.quavii.dsige.lectura.ui.fragments
 
 import android.annotation.SuppressLint
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +22,6 @@ import com.quavii.dsige.lectura.data.viewModel.RepartoViewModel
 import com.quavii.dsige.lectura.helper.Util
 import com.quavii.dsige.lectura.ui.adapters.FormatoAdapter
 import com.quavii.dsige.lectura.ui.listeners.OnItemClickListener
-import com.quavii.dsige.lectura.ui.services.AlertRepartoSleepService
 import com.quavii.dsige.lectura.ui.services.DistanceService
 import kotlinx.android.synthetic.main.fragment_general.*
 
@@ -53,13 +48,13 @@ class GeneralFragment : Fragment(), View.OnClickListener {
 
     lateinit var repartoViewModel: RepartoViewModel
     lateinit var r: RegistroRecibo
-    var viewPager: ViewPager? = null
+    private var viewPager: ViewPager? = null
 
-    var repartoId: Int = 0
-    var recibo: String = ""
-    var operarioId: Int = 0
-    var cliente: String = ""
-    var validation: Int = 0
+    private var repartoId: Int = 0
+    private var recibo: String = ""
+    private var operarioId: Int = 0
+    private var cliente: String = ""
+    private var validation: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +74,7 @@ class GeneralFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        repartoViewModel = ViewModelProviders.of(this).get(RepartoViewModel::class.java)
+        repartoViewModel = ViewModelProvider(this).get(RepartoViewModel::class.java)
         repartoViewModel.initialRealm()
         editTextVivienda.setOnClickListener(this)
         editTextColorFachada.setOnClickListener(this)
@@ -247,13 +242,13 @@ class GeneralFragment : Fragment(), View.OnClickListener {
     }
 
     private fun message() {
-        repartoViewModel.mensajeError.observe(this, Observer<String> { s ->
+        repartoViewModel.mensajeError.observe(viewLifecycleOwner, { s ->
             if (s != null) {
                 Util.hideKeyboardFrom(context!!, view!!)
                 Util.toastMensaje(context!!, s)
             }
         })
-        repartoViewModel.mensajeSuccess.observe(this, Observer<String> { s ->
+        repartoViewModel.mensajeSuccess.observe(viewLifecycleOwner, { s ->
             if (s != null) {
                 Util.clearNotification(context!!)
                 Util.hideKeyboardFrom(context!!, view!!)

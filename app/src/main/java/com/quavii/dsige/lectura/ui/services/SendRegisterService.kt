@@ -1,6 +1,7 @@
 package com.quavii.dsige.lectura.ui.services
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.Environment
 import android.os.IBinder
@@ -41,11 +42,11 @@ class SendRegisterService : Service() {
         val realm = Realm.getDefaultInstance()
         val registroImp = RegistroOver(realm)
         val sendInterfaces = ConexionRetrofit.api.create(ApiServices::class.java)
-        sendDataRx(registroImp, sendInterfaces)
+        sendDataRx(this@SendRegisterService, registroImp, sendInterfaces)
         return START_STICKY
     }
 
-    private fun sendDataRx(registroImp: RegistroImplementation, sendInterfaces: ApiServices) {
+    private fun sendDataRx(context: Context, registroImp: RegistroImplementation, sendInterfaces: ApiServices) {
         var mensaje = ""
         val auditorias = registroImp.getAllRegistroRx(1)
         auditorias.flatMap { observable ->
@@ -60,7 +61,7 @@ class SendRegisterService : Service() {
 
                 for (p: Photo in a.photos!!) {
                     if (p.rutaFoto.isNotEmpty()) {
-                        val file = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + p.rutaFoto)
+                        val file = File(Util.getFolder(context), p.rutaFoto)
                         if (file.exists()) {
                             filePaths.add(file.toString())
                             tieneFoto++

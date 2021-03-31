@@ -63,7 +63,7 @@ class AlertRepartoSleepService : Service() {
             timer.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
                     try {
-                        val msg: Message? = toastHandler.obtainMessage()
+                        val msg: Message = toastHandler.obtainMessage()
                         val b = Bundle()
                         b.putString("Cod_Orden_Reparto", bundle.getString("Cod_Orden_Reparto"))
                         b.putInt("id_cab_Reparto", bundle.getInt("id_cab_Reparto"))
@@ -73,7 +73,7 @@ class AlertRepartoSleepService : Service() {
                         b.putInt("operarioId", bundle.getInt("operarioId"))
                         b.putString("cliente", bundle.getString("cliente"))
                         b.putInt("registroId", bundle.getInt("registroId"))
-                        msg?.data = b
+                        msg.data = b
                         toastHandler.sendMessage(msg)
                     } catch (e: RuntimeException) {
                         Log.e("TAG", e.toString())
@@ -112,7 +112,7 @@ class AlertRepartoSleepService : Service() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val nBuilder = getBasicNotificationBuilder(context, CHANNEL_ID_TIMER, true)
+        val nBuilder = getBasicNotificationBuilder(context)
         nBuilder.setContentTitle(String.format("Cuenta Contrato : %s", suministroNumeroReparto))
                 .setContentText(direction)
                 .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
@@ -126,16 +126,15 @@ class AlertRepartoSleepService : Service() {
 //        (Date().time / 1000L % Integer.MAX_VALUE).toInt()
     }
 
-    private fun getBasicNotificationBuilder(context: Context, channelId: String, playSound: Boolean)
+    private fun getBasicNotificationBuilder(context: Context)
             : NotificationCompat.Builder {
         val notificationSound: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val nBuilder = NotificationCompat.Builder(context, channelId)
+        return NotificationCompat.Builder(context, CHANNEL_ID_TIMER)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
                 .setAutoCancel(true)
                 .setDefaults(0)
-        if (playSound) nBuilder.setSound(notificationSound)
-        return nBuilder
+                .setSound(notificationSound)
     }
 
     @TargetApi(26)

@@ -40,7 +40,7 @@ class FirmAdapter(private val listener: OnItemClickListener.PhotoListener) :
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(p: Photo, listener: OnItemClickListener.PhotoListener) = with(itemView) {
-            val f = File(Environment.getExternalStorageDirectory(), Util.FolderImg + "/" + p.rutaFoto)
+            val f = File(Util.getFolder(itemView.context), p.rutaFoto)
             Picasso.get().load(f).into(imageViewFirm)
             textViewName.text = String.format("%s", p.rutaFoto)
             itemView.setOnClickListener { view -> listener.onItemClick(p, view, adapterPosition) }

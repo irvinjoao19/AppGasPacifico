@@ -1,6 +1,6 @@
 package com.quavii.dsige.lectura.data.viewModel
 
-import android.os.Environment
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,7 +18,6 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import io.realm.RealmResults
@@ -105,7 +104,7 @@ class StartViewModel : ViewModel() {
     }
 
 
-    fun sendSelfie(state: Int, name: String) {
+    fun sendSelfie(context: Context, state: Int, name: String) {
         var mensaje = ""
         val auditorias = registroImp.getSelfie(state, name)
         auditorias.flatMap { a ->
@@ -118,7 +117,7 @@ class StartViewModel : ViewModel() {
 
             for (p: Photo in a.photos!!) {
                 if (p.rutaFoto.isNotEmpty()) {
-                    val file = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + p.rutaFoto)
+                    val file = File(Util.getFolder(context), p.rutaFoto)
                     if (file.exists()) {
                         filePaths.add(file.toString())
                         tieneFoto++
@@ -141,7 +140,7 @@ class StartViewModel : ViewModel() {
             b.addFormDataPart("model", json)
 
             val requestBody = b.build()
-            Observable.zip(Observable.just(r), apiServices.sendRegistroRx(requestBody), BiFunction<Registro, Mensaje, Mensaje> { registro, mensaje ->
+            Observable.zip(Observable.just(r), apiServices.sendRegistroRx(requestBody), { registro, mensaje ->
                 registroImpRx.closeOneRegistro(registro, 0)
                 mensaje
             })
@@ -164,7 +163,7 @@ class StartViewModel : ViewModel() {
                             val errorConverter: Converter<ResponseBody, MessageError> = ConexionRetrofit.api.responseBodyConverter(MessageError::class.java, arrayOfNulls<Annotation>(0))
                             try {
                                 val error = errorConverter.convert(body!!)
-                                mensajeError.postValue(error.Message)
+                                mensajeError.postValue(error!!.Message)
                             } catch (e: IOException) {
                                 e.printStackTrace()
                                 mensajeError.postValue(e.toString())

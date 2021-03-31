@@ -1,6 +1,5 @@
 package com.quavii.dsige.lectura.ui.adapters
 
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +36,7 @@ class FirmRepartoAdapter : RecyclerView.Adapter<FirmRepartoAdapter.ViewHolder>()
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(m: MenuPrincipal) = with(itemView) {
-            val f = File(Environment.getExternalStorageDirectory(), Util.FolderImg + "/" + m.title)
+            val f = File(Util.getFolder(itemView.context), m.title)
             Picasso.get()
                     .load(f)
                     .into(imageViewFirm, object : Callback {

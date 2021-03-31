@@ -2,6 +2,7 @@ package com.quavii.dsige.lectura.ui.activities
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
@@ -112,11 +113,11 @@ class PhotoActivity : AppCompatActivity(), View.OnClickListener {
                         }
                     }
                     tipo == 3 -> {
-                        if (cantidad < 2) {
+//                        if (cantidad < 2) {
                             createImage()
-                        } else {
-                            HelperDialog.MensajeOk(this, "Mensaje", "Maximo 2 fotos")
-                        }
+//                        } else {
+//                            HelperDialog.MensajeOk(this, "Mensaje", "Maximo 2 fotos")
+//                        }
                     }
                     tipo == 4 -> {
                         if (cantidad < 3) {
@@ -285,7 +286,7 @@ class PhotoActivity : AppCompatActivity(), View.OnClickListener {
     private fun createImage() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (takePictureIntent.resolveActivity(Objects.requireNonNull(this@PhotoActivity).packageManager) != null) {
-            folder = Util.getFolder()
+            folder = Util.getFolder(this@PhotoActivity)
             nameImg = Util.getFechaActualForPhoto(suministro.toInt(), tipo) + ".jpg"
             image = File(folder, nameImg)
             direction = "$folder/$nameImg"
@@ -419,7 +420,7 @@ class PhotoActivity : AppCompatActivity(), View.OnClickListener {
             tipo == 4 -> {
 //                if (parentId == 92) {
                     if (online == 1) {
-                        sendDataRx(suministro, orden_2, tipo)
+                        sendDataRx(this,suministro, orden_2, tipo)
 //                    SendData().execute(suministro, orden_2.toString(), tipo.toString())
                     } else {
                         registroImp.updateRegistroDesplaza(receive, tipo, 1)
@@ -446,7 +447,7 @@ class PhotoActivity : AppCompatActivity(), View.OnClickListener {
             // ANTERIOR
             tipo == 3 -> {
                 if (online == 1) {
-                    sendDataRx(suministro, orden_2, tipo)
+                    sendDataRx(this,suministro, orden_2, tipo)
 //                    SendData().execute(suministro, orden_2.toString(), tipo.toString())
                 } else {
                     registroImp.updateRegistroDesplaza(receive, tipo, 1)
@@ -591,7 +592,7 @@ class PhotoActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun sendDataRx(suministro: String?, orden: Int, tipo: Int) {
+    private fun sendDataRx(context: Context, suministro: String?, orden: Int, tipo: Int) {
         val builder = AlertDialog.Builder(ContextThemeWrapper(this@PhotoActivity, R.style.AppTheme))
         @SuppressLint("InflateParams") val view = LayoutInflater.from(this@PhotoActivity).inflate(R.layout.dialog_alert, null)
         val textViewTitulo: TextView = view.findViewById(R.id.textViewTitulo)
@@ -616,7 +617,7 @@ class PhotoActivity : AppCompatActivity(), View.OnClickListener {
 
             for (p: Photo in a.photos!!) {
                 if (p.rutaFoto.isNotEmpty()) {
-                    val file = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + p.rutaFoto)
+                    val file = File(Util.getFolder(context), p.rutaFoto)
                     if (file.exists()) {
                         filePaths.add(file.toString())
                         tieneFoto++
@@ -703,7 +704,7 @@ class PhotoActivity : AppCompatActivity(), View.OnClickListener {
                     siguienteOrden(tipo, estado)
                 }
             } else {
-                sendDataRx(suministro, orden_2, tipo)
+                sendDataRx(this,suministro, orden_2, tipo)
             }
             dialog.dismiss()
         }

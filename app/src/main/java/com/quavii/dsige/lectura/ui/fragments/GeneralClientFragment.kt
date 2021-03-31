@@ -16,7 +16,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,7 +56,7 @@ class GeneralClientFragment : Fragment(), View.OnClickListener {
             R.id.editTextPresentaCliente -> dialogSpinner("Presenta Cliente ?", 4)
             R.id.buttonEMR -> {
                 c.fechaRegistroInicio = Util.getFecha()
-                clienteViewModel.updateCliente(c, "Registro Inicio Guardado")
+                clienteViewModel.updateCliente(context!!,c, "Registro Inicio Guardado")
             }
             R.id.fabCameraCliente -> if (clienteViewModel.validateCliente1(c)) createImage(1)
             R.id.fabCameraValorPresionEntrada -> if (clienteViewModel.validateCliente2(c)) createImage(2)
@@ -78,7 +78,7 @@ class GeneralClientFragment : Fragment(), View.OnClickListener {
                             c.latitud = gps.latitude.toString()
                             c.longitud = gps.longitude.toString()
                             c.comentario = editTextComentario.text.toString()
-                            clienteViewModel.updateCliente(c, "Cliente Actualizado")
+                            clienteViewModel.updateCliente(context!!,c, "Cliente Actualizado")
                             load()
                         }
                     }
@@ -117,7 +117,7 @@ class GeneralClientFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        clienteViewModel = ViewModelProviders.of(this).get(ClienteViewModel::class.java)
+        clienteViewModel = ViewModelProvider(this).get(ClienteViewModel::class.java)
         clienteViewModel.initialRealm()
         buttonEMR.setOnClickListener(this)
         editTextCliente.setOnClickListener(this)
@@ -202,7 +202,7 @@ class GeneralClientFragment : Fragment(), View.OnClickListener {
     private fun createImage(tipo: Int) {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (takePictureIntent.resolveActivity(context!!.packageManager) != null) {
-            folder = Util.getFolder()
+            folder = Util.getFolder(context!!)
             nameImg = Util.getFechaActualForPhoto(c.clienteId, 7) + ".jpg"
             image = File(folder, nameImg)
             direction = "$folder/$nameImg"
@@ -246,43 +246,43 @@ class GeneralClientFragment : Fragment(), View.OnClickListener {
                             when (code) {
                                 1 -> {
                                     c.fotoConstanciaPermiteAcceso = nameImg
-                                    clienteViewModel.updateCliente(c, "Foto de cliente permite acceso guardado")
+                                    clienteViewModel.updateCliente(context!!,c, "Foto de cliente permite acceso guardado")
                                 }
                                 2 -> {
                                     c.fotovManoPresionEntrada = nameImg
-                                    clienteViewModel.updateCliente(c, "Foto presión entrada guardada")
+                                    clienteViewModel.updateCliente(context!!,c, "Foto presión entrada guardada")
                                 }
                                 3 -> {
                                     c.fotovVolumenSCorreMedidor = nameImg
-                                    clienteViewModel.updateCliente(c, "Foto sin corregir medidor guardada.")
+                                    clienteViewModel.updateCliente(context!!,c, "Foto sin corregir medidor guardada.")
                                 }
                                 4 -> {
                                     c.fotovVolumenSCorreUC = nameImg
-                                    clienteViewModel.updateCliente(c, "Foto sin corregir unidad correctora guardada")
+                                    clienteViewModel.updateCliente(context!!,c, "Foto sin corregir unidad correctora guardada")
                                 }
                                 5 -> {
                                     c.fotovVolumenRegUC = nameImg
-                                    clienteViewModel.updateCliente(c, "Foto registrador de la unidad correctora guardada")
+                                    clienteViewModel.updateCliente(context!!,c, "Foto registrador de la unidad correctora guardada")
                                 }
                                 6 -> {
                                     c.fotovPresionMedicionUC = nameImg
-                                    clienteViewModel.updateCliente(c, "Foto presion de medición UC guardada")
+                                    clienteViewModel.updateCliente(context!!,c, "Foto presion de medición UC guardada")
                                 }
                                 7 -> {
                                     c.fotovTemperaturaMedicionUC = nameImg
-                                    clienteViewModel.updateCliente(c, "Foto temperatura medicion UC guardada")
+                                    clienteViewModel.updateCliente(context!!,c, "Foto temperatura medicion UC guardada")
                                 }
                                 8 -> {
                                     c.fotoTiempoVidaBateria = nameImg
-                                    clienteViewModel.updateCliente(c, "Foto tiempo de bateria guardada")
+                                    clienteViewModel.updateCliente(context!!,c, "Foto tiempo de bateria guardada")
                                 }
                                 9 -> {
                                     c.fotoPanomarica = nameImg
-                                    clienteViewModel.updateCliente(c, "Foto panoramica Actualizado")
+                                    clienteViewModel.updateCliente(context!!,c, "Foto panoramica Actualizado")
                                 }
                                 10 -> {
                                     c.foroSitieneGabinete = nameImg
-                                    clienteViewModel.updateCliente(c, "Foto Gabinete guardada")
+                                    clienteViewModel.updateCliente(context!!,c, "Foto Gabinete guardada")
                                 }
                             }
                         }
@@ -440,7 +440,7 @@ class GeneralClientFragment : Fragment(), View.OnClickListener {
     }
 
     private fun message() {
-        clienteViewModel.mensajeError.observe(this, androidx.lifecycle.Observer<String> { s ->
+        clienteViewModel.mensajeError.observe(viewLifecycleOwner, androidx.lifecycle.Observer<String> { s ->
             if (dialog != null) {
                 if (dialog!!.isShowing) {
                     dialog!!.dismiss()
@@ -452,7 +452,7 @@ class GeneralClientFragment : Fragment(), View.OnClickListener {
             Util.toastMensaje(context!!, s)
         })
 
-        clienteViewModel.mensajeSuccess.observe(this, androidx.lifecycle.Observer<String> { s ->
+        clienteViewModel.mensajeSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer<String> { s ->
             Util.toastMensaje(context!!, s)
             if (s == "Cliente Actualizado") {
                 if (dialog != null) {
@@ -527,7 +527,7 @@ class GeneralClientFragment : Fragment(), View.OnClickListener {
                 c.confirmarVolumenSCorreUC = editTextLecturaConfirm.text.toString()
 
                 if (clienteViewModel.validateCliente4(c)){
-                    clienteViewModel.updateCliente(c,"Validando Relectura")
+                    clienteViewModel.updateCliente(context!!,c,"Validando Relectura")
                 }
 
 

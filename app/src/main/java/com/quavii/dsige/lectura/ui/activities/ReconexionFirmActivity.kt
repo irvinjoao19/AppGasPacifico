@@ -10,14 +10,12 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.quavii.dsige.lectura.R
 import com.quavii.dsige.lectura.data.model.Photo
 import com.quavii.dsige.lectura.data.viewModel.PhotoViewModel
-import com.quavii.dsige.lectura.helper.AfterOrden
 import com.quavii.dsige.lectura.helper.Util
 import com.quavii.dsige.lectura.ui.adapters.FirmAdapter
 import com.quavii.dsige.lectura.ui.listeners.OnItemClickListener
@@ -51,19 +49,19 @@ class ReconexionFirmActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     lateinit var photoViewModel: PhotoViewModel
-    var tipo: Int = 0
-    var receive: Int = 0
-    var online: Int = 0
-    var orden: Int = 0
-    var order2: Int = 0
-    var suministro: String = ""
-    var tipoFirma: String = "C"
-    var titulo: String = ""
-    var estado: Int = 0
-    var fechaAsignacion: String = ""
+    private var tipo: Int = 0
+    private var receive: Int = 0
+    private var online: Int = 0
+    private var orden: Int = 0
+    private var order2: Int = 0
+    private var suministro: String = ""
+    private var tipoFirma: String = "C"
+    private var titulo: String = ""
+    private var estado: Int = 0
+    private var fechaAsignacion: String = ""
 
     lateinit var builder: AlertDialog.Builder
-    var dialog: AlertDialog? = null
+    private var dialog: AlertDialog? = null
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -112,7 +110,7 @@ class ReconexionFirmActivity : AppCompatActivity(), View.OnClickListener {
             fabSend.text = String.format("%s", "Guardar")
         }
 
-        photoViewModel = ViewModelProviders.of(this).get(PhotoViewModel::class.java)
+        photoViewModel = ViewModelProvider(this).get(PhotoViewModel::class.java)
         photoViewModel.initialRealm()
         setSupportActionBar(toolbar)
         supportActionBar!!.title = "Reconexion de Firmas"
@@ -183,13 +181,13 @@ class ReconexionFirmActivity : AppCompatActivity(), View.OnClickListener {
 //        }
     }
 
-    private fun load(title: String) {
+    private fun load() {
         builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AppTheme))
         @SuppressLint("InflateParams") val view =
                 LayoutInflater.from(this).inflate(R.layout.dialog_login, null)
         builder.setView(view)
         val textViewTitle: TextView = view.findViewById(R.id.textViewTitle)
-        textViewTitle.text = title
+        textViewTitle.text = String.format("Enviando...")
         dialog = builder.create()
         dialog!!.setCanceledOnTouchOutside(false)
         dialog!!.setCancelable(false)
@@ -211,7 +209,7 @@ class ReconexionFirmActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun message() {
-        photoViewModel.error.observe(this, Observer<String> { s ->
+        photoViewModel.error.observe(this, { s ->
             if (s != null) {
                 if (dialog != null) {
                     if (dialog!!.isShowing) {
@@ -224,7 +222,7 @@ class ReconexionFirmActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun success() {
-        photoViewModel.success.observe(this, Observer<String> { s ->
+        photoViewModel.success.observe(this, { s ->
             if (s != null) {
                 Util.toastMensaje(this, s)
                 if (s != "Firma Eliminada") {
@@ -241,7 +239,7 @@ class ReconexionFirmActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun errorDialog() {
-        photoViewModel.errorDialog.observe(this, Observer<String> { s ->
+        photoViewModel.errorDialog.observe(this, { s ->
             if (s != null) {
                 if (dialog != null) {
                     if (dialog!!.isShowing) {
@@ -253,8 +251,8 @@ class ReconexionFirmActivity : AppCompatActivity(), View.OnClickListener {
                         .setTitle("Mensaje")
                         .setMessage(String.format("%s", s))
                         .setPositiveButton("Aceptar") { dialog, _ ->
-                            photoViewModel.sendData(suministro, order2, tipo)
-                            load("Enviando...")
+                            photoViewModel.sendData(this, suministro, order2, tipo)
+                            load()
                             dialog.dismiss()
                         }
                         .setNegativeButton("Siguiente") { dialog, _ ->
@@ -299,8 +297,8 @@ class ReconexionFirmActivity : AppCompatActivity(), View.OnClickListener {
                 .setTitle("Mensaje")
                 .setMessage(String.format("%s", "Estas seguro de enviar ?."))
                 .setPositiveButton("Aceptar") { dialog, _ ->
-                    photoViewModel.sendData(suministro, order2, tipo)
-                    load("Enviando...")
+                    photoViewModel.sendData(this, suministro, order2, tipo)
+                    load()
                     dialog.dismiss()
                 }
                 .setNegativeButton("Cancelar") { dialog, _ ->

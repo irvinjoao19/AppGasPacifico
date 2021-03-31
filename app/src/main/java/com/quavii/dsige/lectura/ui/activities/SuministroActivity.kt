@@ -209,11 +209,10 @@ class SuministroActivity : AppCompatActivity(), View.OnClickListener {
                                 }
                             }
                             else -> {
-                                val nombre = "Reclamos"
                                 val intent = Intent(this@SuministroActivity, SuministroAfterActivity::class.java)
                                 intent.putExtra("orden", s.orden)
                                 intent.putExtra("orden_2", s.suministroOperario_Orden)
-                                intent.putExtra("nombre", nombre)
+                                intent.putExtra("nombre", "Reclamos")
                                 intent.putExtra("estado", estado)
                                 startActivity(intent)
                                 finish()

@@ -12,8 +12,7 @@ import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.quavii.dsige.lectura.data.model.*
 import com.quavii.dsige.lectura.helper.HelperDialog
 import com.quavii.dsige.lectura.R
@@ -30,14 +29,13 @@ class SendActivity : AppCompatActivity() {
     lateinit var sendAdapter: SendAdapter
 
     lateinit var builder: AlertDialog.Builder
-    var dialog: AlertDialog? = null
-
+    private var dialog: AlertDialog? = null
     lateinit var envioViewModel: EnvioViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_send)
-        envioViewModel = ViewModelProviders.of(this).get(EnvioViewModel::class.java)
+        envioViewModel = ViewModelProvider(this).get(EnvioViewModel::class.java)
         envioViewModel.initialRealm()
         bindUI()
         message()
@@ -89,7 +87,7 @@ class SendActivity : AppCompatActivity() {
                 .setMessage(String.format("%s", "Antes de enviar asegurate de contar con internet !.\nDeseas enviar los Registros ?."))
                 .setPositiveButton("Aceptar") { dialog, _ ->
                     if (count > 0) {
-                        envioViewModel.sendData()
+                        envioViewModel.sendData(this)
                         load()
                     } else {
                         HelperDialog.MensajeOk(this@SendActivity, "Mensaje", "No cuentas con ningún Registro")
@@ -115,7 +113,7 @@ class SendActivity : AppCompatActivity() {
     }
 
     private fun message() {
-        envioViewModel.error.observe(this, Observer<String> { s ->
+        envioViewModel.error.observe(this, { s ->
             if (s != null) {
                 if (dialog != null) {
                     if (dialog!!.isShowing) {
@@ -126,7 +124,7 @@ class SendActivity : AppCompatActivity() {
             }
         })
 
-        envioViewModel.success.observe(this, Observer<String> { s ->
+        envioViewModel.success.observe(this, { s ->
             if (s != null) {
                 if (dialog != null) {
                     if (dialog!!.isShowing) {

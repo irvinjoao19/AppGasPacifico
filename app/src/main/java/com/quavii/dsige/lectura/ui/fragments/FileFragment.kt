@@ -9,8 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 
 import com.quavii.dsige.lectura.R
@@ -40,9 +39,8 @@ class FileFragment : Fragment(), View.OnClickListener {
     lateinit var c: GrandesClientes
     private var clienteId: Int = 0
     lateinit var builder: AlertDialog.Builder
-    var dialog: AlertDialog? = null
-    var viewPager: ViewPager? = null
-
+    private var dialog: AlertDialog? = null
+    private var viewPager: ViewPager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +55,7 @@ class FileFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        clienteViewModel = ViewModelProviders.of(this).get(ClienteViewModel::class.java)
+        clienteViewModel = ViewModelProvider(this).get(ClienteViewModel::class.java)
         clienteViewModel.initialRealm()
         fabVerificate.setOnClickListener(this)
         fabClose.setOnClickListener(this)
@@ -101,7 +99,7 @@ class FileFragment : Fragment(), View.OnClickListener {
     }
 
     private fun message() {
-        clienteViewModel.mensajeError.observe(this, Observer<String> { s ->
+        clienteViewModel.mensajeError.observe(viewLifecycleOwner, { s ->
             if (s != null) {
                 if (dialog != null) {
                     if (dialog!!.isShowing) {
@@ -119,7 +117,7 @@ class FileFragment : Fragment(), View.OnClickListener {
             }
         })
 
-        clienteViewModel.mensajeSuccess.observe(this, Observer<String> { s ->
+        clienteViewModel.mensajeSuccess.observe(viewLifecycleOwner, { s ->
             if (s != null) {
                 if (dialog != null) {
                     if (dialog!!.isShowing) {

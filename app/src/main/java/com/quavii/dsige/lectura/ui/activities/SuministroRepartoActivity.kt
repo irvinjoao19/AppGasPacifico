@@ -174,7 +174,7 @@ class SuministroRepartoActivity : AppCompatActivity(), View.OnClickListener {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", 1)
         if (takePictureIntent.resolveActivity(Objects.requireNonNull(this).packageManager) != null) {
-            folder = Util.getFolder()
+            folder = Util.getFolder(this)
             nameImg = Util.getFechaActualRepartoPhoto(usuarioId, "FIN") + ".jpg"
             image = File(folder, nameImg)
             direction = "$folder/$nameImg"

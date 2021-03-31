@@ -50,7 +50,7 @@ class SuministroAfterActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v.id) {
             R.id.buttonGrabar -> {
-                val valConfirm: String? = editTextLectura.text.toString()
+                val valConfirm: String = editTextLectura.text.toString()
                 val lectura: Int = if (valConfirm.isNullOrEmpty()) 0 else valConfirm.toInt()
                 gps = Gps(this@SuministroAfterActivity)
                 if (gps.isLocationEnabled()) {
@@ -263,23 +263,22 @@ class SuministroAfterActivity : AppCompatActivity(), View.OnClickListener {
 
     // For Lectura
     private var lecturaAnterior: Double? = 0.0
-    var pidePhoto: String = ""
-    var pideLectura: String = ""
+    private var pidePhoto: String = ""
+    private var pideLectura: String = ""
     private var tipoCliente: Int = 0
+
     // Se utiliza para Lectura Recuperadas
     private var recuperada = 0
 
-    var latitud = ""
-    var longitud = ""
-    var suministro_Numero = ""
-
-    var contrato: String = ""
-    var fechaAsignacion: String = ""
-    var fotoConfirmacion: Int = 0
-
-    var responsable: String = ""
-    var parentesco: String = ""
-    var precinto: String = ""
+    private var latitud = ""
+    private var longitud = ""
+    private var suministro_Numero = ""
+    private var contrato: String = ""
+    private var fechaAsignacion: String = ""
+    private var fotoConfirmacion: Int = 0
+    private var responsable: String = ""
+    private var parentesco: String = ""
+    private var precinto: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -1018,7 +1017,7 @@ class SuministroAfterActivity : AppCompatActivity(), View.OnClickListener {
     private fun createImage() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (takePictureIntent.resolveActivity(Objects.requireNonNull(this).packageManager) != null) {
-            folder = Util.getFolder()
+            folder = Util.getFolder(this)
             nameImg = Util.getFechaActualForPhoto(contrato.toInt(), tipo) + ".jpg"
             image = File(folder, nameImg)
             direction = "$folder/$nameImg"

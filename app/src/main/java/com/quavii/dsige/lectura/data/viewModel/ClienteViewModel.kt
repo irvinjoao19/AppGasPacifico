@@ -1,6 +1,6 @@
 package com.quavii.dsige.lectura.data.viewModel
 
-import android.os.Environment
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -955,14 +955,14 @@ class ClienteViewModel : ViewModel() {
         return true
     }
 
-    fun updateCliente(c: GrandesClientes, mensaje: String) {
+    fun updateCliente(context:Context,c: GrandesClientes, mensaje: String) {
         registroImp.updateClientes(c)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : CompletableObserver {
                     override fun onComplete() {
                         if (mensaje == "Cliente Actualizado") {
-                            sendCliente(c.clienteId, mensaje)
+                            sendCliente(context,c.clienteId, mensaje)
                         } else {
                             mensajeSuccess.value = mensaje
                         }
@@ -978,67 +978,67 @@ class ClienteViewModel : ViewModel() {
                 })
     }
 
-    private fun sendCliente(clienteId: Int, mensaje: String) {
+    private fun sendCliente(context: Context, clienteId: Int, mensaje: String) {
         val auditorias = registroImp.getClienteById(clienteId)
         auditorias.flatMap { c ->
             val realm = Realm.getDefaultInstance()
             val b = MultipartBody.Builder()
             if (c.clientePermiteAcceso == "NO") {
-                val file = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + c.fotoConstanciaPermiteAcceso)
+                val file = File(Util.getFolder(context), c.fotoConstanciaPermiteAcceso)
                 if (file.exists()) {
                     b.addFormDataPart("fotos", file.name, RequestBody.create(MediaType.parse("multipart/form-data"), file))
                 }
             } else {
                 if (c.fotovManoPresionEntrada.isNotEmpty()) {
-                    val file = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + c.fotovManoPresionEntrada)
+                    val file = File(Util.getFolder(context), c.fotovManoPresionEntrada)
                     if (file.exists()) {
                         b.addFormDataPart("fotos", file.name, RequestBody.create(MediaType.parse("multipart/form-data"), file))
                     }
                 }
                 if (c.fotovVolumenSCorreUC.isNotEmpty()) {
-                    val file2 = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + c.fotovVolumenSCorreUC)
+                    val file2 = File(Util.getFolder(context), c.fotovVolumenSCorreUC)
                     if (file2.exists()) {
                         b.addFormDataPart("fotos", file2.name, RequestBody.create(MediaType.parse("multipart/form-data"), file2))
                     }
                 }
                 if (c.fotovVolumenSCorreMedidor.isNotEmpty()) {
-                    val file3 = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + c.fotovVolumenSCorreMedidor)
+                    val file3 = File(Util.getFolder(context), c.fotovVolumenSCorreMedidor)
                     if (file3.exists()) {
                         b.addFormDataPart("fotos", file3.name, RequestBody.create(MediaType.parse("multipart/form-data"), file3))
                     }
                 }
                 if (c.fotovVolumenRegUC.isNotEmpty()) {
-                    val file4 = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + c.fotovVolumenRegUC)
+                    val file4 = File(Util.getFolder(context), c.fotovVolumenRegUC)
                     if (file4.exists()) {
                         b.addFormDataPart("fotos", file4.name, RequestBody.create(MediaType.parse("multipart/form-data"), file4))
                     }
                 }
                 if (c.fotovPresionMedicionUC.isNotEmpty()) {
-                    val file5 = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + c.fotovPresionMedicionUC)
+                    val file5 = File(Util.getFolder(context), c.fotovPresionMedicionUC)
                     if (file5.exists()) {
                         b.addFormDataPart("fotos", file5.name, RequestBody.create(MediaType.parse("multipart/form-data"), file5))
                     }
                 }
                 if (c.fotoTiempoVidaBateria.isNotEmpty()) {
-                    val file6 = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + c.fotoTiempoVidaBateria)
+                    val file6 = File(Util.getFolder(context), c.fotoTiempoVidaBateria)
                     if (file6.exists()) {
                         b.addFormDataPart("fotos", file6.name, RequestBody.create(MediaType.parse("multipart/form-data"), file6))
                     }
                 }
                 if (c.fotovTemperaturaMedicionUC.isNotEmpty()) {
-                    val file7 = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + c.fotovTemperaturaMedicionUC)
+                    val file7 = File(Util.getFolder(context), c.fotovTemperaturaMedicionUC)
                     if (file7.exists()) {
                         b.addFormDataPart("fotos", file7.name, RequestBody.create(MediaType.parse("multipart/form-data"), file7))
                     }
                 }
                 if (c.fotoPanomarica.isNotEmpty()) {
-                    val file8 = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + c.fotoPanomarica)
+                    val file8 = File(Util.getFolder(context), c.fotoPanomarica)
                     if (file8.exists()) {
                         b.addFormDataPart("fotos", file8.name, RequestBody.create(MediaType.parse("multipart/form-data"), file8))
                     }
                 }
                 if (c.foroSitieneGabinete.isNotEmpty()) {
-                    val file9 = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + c.foroSitieneGabinete)
+                    val file9 = File(Util.getFolder(context), c.foroSitieneGabinete)
                     if (file9.exists()) {
                         b.addFormDataPart("fotos", file9.name, RequestBody.create(MediaType.parse("multipart/form-data"), file9))
                     }
@@ -1049,8 +1049,8 @@ class ClienteViewModel : ViewModel() {
             b.setType(MultipartBody.FORM)
             b.addFormDataPart("model", json)
             val requestBody = b.build()
-            Observable.zip(Observable.just(c), apiServices.sendCliente(requestBody), BiFunction<GrandesClientes, Mensaje, Mensaje> { registro, mensaje ->
-                mensaje
+            Observable.zip(Observable.just(c), apiServices.sendCliente(requestBody), { _, m ->
+                m
             })
         }.subscribeOn(Schedulers.computation())
                 .delay(600, TimeUnit.MILLISECONDS)
@@ -1071,7 +1071,7 @@ class ClienteViewModel : ViewModel() {
                             val errorConverter: Converter<ResponseBody, MessageError> = ConexionRetrofit.api.responseBodyConverter(MessageError::class.java, arrayOfNulls<Annotation>(0))
                             try {
                                 val error = errorConverter.convert(body!!)
-                                mensajeError.postValue(error.Message)
+                                mensajeError.postValue(error!!.Message)
                             } catch (e: IOException) {
                                 e.printStackTrace()
                             }
@@ -1110,7 +1110,7 @@ class ClienteViewModel : ViewModel() {
                             val errorConverter: Converter<ResponseBody, MessageError> = ConexionRetrofit.api.responseBodyConverter(MessageError::class.java, arrayOfNulls<Annotation>(0))
                             try {
                                 val error = errorConverter.convert(body!!)
-                                mensajeError.postValue(error.Message)
+                                mensajeError.postValue(error!!.Message)
                             } catch (e: IOException) {
                                 e.printStackTrace()
                             }

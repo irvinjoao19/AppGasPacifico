@@ -40,7 +40,7 @@ class PhotoAdapter(private var photos: RealmResults<Photo>?, private var listene
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         internal fun bind(photo: Photo, listener: OnItemClickListener) = with(itemView) {
-            val f = File(Environment.getExternalStorageDirectory(), Util.FolderImg + "/" + photo.rutaFoto)
+            val f = File(Util.getFolder(itemView.context), photo.rutaFoto)
             Picasso.get()
                     .load(f)
                     .into(imageViewPhoto, object : Callback {

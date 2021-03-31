@@ -5,13 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.quavii.dsige.lectura.R
 import com.quavii.dsige.lectura.data.model.GrandesClientes
 import com.quavii.dsige.lectura.data.viewModel.ClienteViewModel
-import com.quavii.dsige.lectura.data.viewModel.RepartoViewModel
 import com.quavii.dsige.lectura.ui.adapters.ClientesAdapter
 import com.quavii.dsige.lectura.ui.listeners.OnItemClickListener
 import kotlinx.android.synthetic.main.activity_list_clients.*
@@ -27,7 +26,7 @@ class ListClientsActivity : AppCompatActivity() {
     }
 
     private fun bindUI() {
-        clienteViewModel = ViewModelProviders.of(this).get(ClienteViewModel::class.java)
+        clienteViewModel = ViewModelProvider(this).get(ClienteViewModel::class.java)
         clienteViewModel.initialRealm()
 
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar

@@ -1,6 +1,6 @@
 package com.quavii.dsige.lectura.data.viewModel
 
-import android.os.Environment
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -84,7 +84,7 @@ class EnvioViewModel : ViewModel() {
         return suministroImp.getSuministroReparto(1)
     }
 
-    fun sendData() {
+    fun sendData(context: Context) {
         val auditorias = registroImp.getAllRegistroRx(1)
         auditorias.flatMap { observable ->
             Observable.fromIterable(observable).flatMap { a ->
@@ -98,7 +98,7 @@ class EnvioViewModel : ViewModel() {
                 val recibo: RegistroRecibo? = a.recibo
                 if (recibo != null) {
                     if (recibo.firmaCliente.isNotEmpty()) {
-                        val file = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + recibo.firmaCliente)
+                        val file = File(Util.getFolder(context), recibo.firmaCliente)
                         if (file.exists()) {
                             filePaths.add(file.toString())
                         }
@@ -107,7 +107,7 @@ class EnvioViewModel : ViewModel() {
 
                 for (p: Photo in a.photos!!) {
                     if (p.rutaFoto.isNotEmpty()) {
-                        val file = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + p.rutaFoto)
+                        val file = File(Util.getFolder(context), p.rutaFoto)
                         if (file.exists()) {
                             filePaths.add(file.toString())
                             tieneFoto++
@@ -154,7 +154,7 @@ class EnvioViewModel : ViewModel() {
                             val errorConverter: Converter<ResponseBody, MessageError> = ConexionRetrofit.api.responseBodyConverter(MessageError::class.java, arrayOfNulls<Annotation>(0))
                             try {
                                 val error = errorConverter.convert(body!!)
-                                mensajeError.postValue(error.Message)
+                                mensajeError.postValue(error!!.Message)
                             } catch (e: IOException) {
                                 mensajeError.postValue(e.toString())
                             }

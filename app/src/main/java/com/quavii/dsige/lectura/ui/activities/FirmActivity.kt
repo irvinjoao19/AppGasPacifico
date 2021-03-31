@@ -7,8 +7,7 @@ import android.util.DisplayMetrics
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.quavii.dsige.lectura.R
 import com.quavii.dsige.lectura.data.model.Photo
 import com.quavii.dsige.lectura.data.viewModel.PhotoViewModel
@@ -27,7 +26,7 @@ class FirmActivity : AppCompatActivity(), View.OnClickListener {
                         if (gps.latitude.toString() == "0.0" || gps.longitude.toString() == "0.0") {
                             gps.showAlert(this@FirmActivity)
                         } else {
-                            val name = paintView.save(receive, tipo, tipoFirma)
+                            val name = paintView.save(this, receive, tipo, tipoFirma)
                             p.iD_Foto = photoViewModel.getPhotoIdentity()
                             p.conformidad = 2
                             p.iD_Suministro = receive
@@ -68,14 +67,13 @@ class FirmActivity : AppCompatActivity(), View.OnClickListener {
 
     lateinit var photoViewModel: PhotoViewModel
     lateinit var p: Photo
-
-    var tipo: Int = 0
-    var receive: Int = 0
-    var online: Int = 0
-    var orden: Int = 0
-    var order2: Int = 0
-    var suministro: String = ""
-    var tipoFirma: String = ""
+    private var tipo: Int = 0
+    private var receive: Int = 0
+    private var online: Int = 0
+    private var orden: Int = 0
+    private var order2: Int = 0
+    private var suministro: String = ""
+    private var tipoFirma: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,7 +95,7 @@ class FirmActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun bindUI() {
-        photoViewModel = ViewModelProviders.of(this).get(PhotoViewModel::class.java)
+        photoViewModel = ViewModelProvider(this).get(PhotoViewModel::class.java)
         photoViewModel.initialRealm()
         fabFirma.setOnClickListener(this)
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
@@ -113,7 +111,7 @@ class FirmActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun message() {
-        photoViewModel.error.observe(this, Observer<String> { s ->
+        photoViewModel.error.observe(this, { s ->
             if (s != null) {
                 Util.toastMensaje(this, s)
             }
@@ -121,7 +119,7 @@ class FirmActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun success() {
-        photoViewModel.success.observe(this, Observer<String> { s ->
+        photoViewModel.success.observe(this, { s ->
             if (s != null) {
                 finish()
             }

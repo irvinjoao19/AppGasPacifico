@@ -52,12 +52,12 @@ class SelfiViewPhoto : AppCompatActivity(), View.OnClickListener {
     private lateinit var folder: File
     private lateinit var image: File
 
-    var idUser: Int = 0
-    var nameImg: String = ""
-    var direction: String = ""
-    var registro_Latitud: String = ""
-    var registro_Longitud: String = ""
-    var titulo: String = ""
+    private var idUser: Int = 0
+    private var nameImg: String = ""
+    private var direction: String = ""
+    private var registro_Latitud: String = ""
+    private var registro_Longitud: String = ""
+    private var titulo: String = ""
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -133,7 +133,7 @@ class SelfiViewPhoto : AppCompatActivity(), View.OnClickListener {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", -1)
         if (takePictureIntent.resolveActivity(Objects.requireNonNull(this@SelfiViewPhoto).packageManager) != null) {
-            folder = Util.getFolder()
+            folder = Util.getFolder(this@SelfiViewPhoto)
             nameImg = Util.getFechaActualRepartoPhoto(idUser, titulo) + ".jpg"
             image = File(folder, nameImg)
             direction = "$folder/$nameImg"
@@ -196,7 +196,7 @@ class SelfiViewPhoto : AppCompatActivity(), View.OnClickListener {
                 gps.showAlert(this@SelfiViewPhoto)
             } else {
                 val photos: RealmList<Photo> = RealmList()
-                val photo: Photo? = Photo(photoImp.getPhotoIdentity(), 0, idUser, nameImg, Util.getFechaActual(), 9, 1, gps.latitude.toString(), gps.longitude.toString())
+                val photo = Photo(photoImp.getPhotoIdentity(), 0, idUser, nameImg, Util.getFechaActual(), 9, 1, gps.latitude.toString(), gps.longitude.toString())
                 photos.add(photo)
                 val registro = Registro(registroImp.getRegistroIdentity(), idUser, idUser, Util.getFechaActual(), registro_Latitud, registro_Longitud, 9, 1, observacion, nameImg, photos)
                 if (observacion == "INICIO") {

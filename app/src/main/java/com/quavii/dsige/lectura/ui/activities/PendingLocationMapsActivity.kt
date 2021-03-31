@@ -27,7 +27,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.quavii.dsige.lectura.data.model.SuministroReparto
-import com.quavii.dsige.lectura.ui.adapters.SuministroRepartoAdapter
 import io.realm.Realm
 import io.realm.RealmResults
 

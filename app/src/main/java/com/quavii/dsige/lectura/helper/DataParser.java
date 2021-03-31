@@ -3,7 +3,6 @@ package com.quavii.dsige.lectura.helper;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ class DataParser {
             jRoutes = jObject.getJSONArray("routes");
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
-                List path = new ArrayList<>();
+                List<HashMap<String, String>> path = new ArrayList<>();
                 for (int j = 0; j < jLegs.length(); j++) {
                     jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
                     for (int k = 0; k < jSteps.length(); k++) {
@@ -41,8 +40,6 @@ class DataParser {
                 }
             }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

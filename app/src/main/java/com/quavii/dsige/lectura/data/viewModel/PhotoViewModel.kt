@@ -1,5 +1,6 @@
 package com.quavii.dsige.lectura.data.viewModel
 
+import android.content.Context
 import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -140,7 +141,7 @@ class PhotoViewModel : ViewModel() {
         return suministroImp.buscarReconexionesByOrden(returnOrden, activo)
     }
 
-    fun sendData(suministro: String, orden: Int, tipo: Int) {
+    fun sendData(context: Context, suministro: String, orden: Int, tipo: Int) {
         val auditorias = registroImp.getRegistroByOrdenRx(orden, tipo)
         auditorias.flatMap { a ->
             val realm = Realm.getDefaultInstance()
@@ -152,7 +153,7 @@ class PhotoViewModel : ViewModel() {
 
             for (p: Photo in a.photos!!) {
                 if (p.rutaFoto.isNotEmpty()) {
-                    val file = File(Environment.getExternalStorageDirectory().toString() + "/" + Util.FolderImg + "/" + p.rutaFoto)
+                    val file = File(Util.getFolder(context), p.rutaFoto)
                     if (file.exists()) {
                         filePaths.add(file.toString())
                         tieneFoto++

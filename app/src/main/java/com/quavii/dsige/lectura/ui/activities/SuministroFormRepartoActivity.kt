@@ -181,7 +181,7 @@ class SuministroFormRepartoActivity : AppCompatActivity(), View.OnClickListener 
     private fun createImage() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (takePictureIntent.resolveActivity(Objects.requireNonNull(this@SuministroFormRepartoActivity).packageManager) != null) {
-            folder = Util.getFolder()
+            folder = Util.getFolder(this)
             nameImg = Util.getFechaActualRepartoPhoto(id_Cab_Reparto, Cod_Orden_Reparto) + ".jpg"
             image = File(folder, nameImg)
             direction = "$folder/$nameImg"

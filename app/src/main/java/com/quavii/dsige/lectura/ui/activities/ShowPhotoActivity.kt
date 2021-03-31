@@ -56,7 +56,7 @@ class ShowPhotoActivity : AppCompatActivity() {
         imageViewPhoto = findViewById<View>(R.id.imageViewPhoto) as ImageView?
         progressBarLoad = findViewById<View>(R.id.progressBarLoad) as ProgressBar?
         val photo: Photo? = photoOver!!.photoById(id)
-        val f = File(Environment.getExternalStorageDirectory(), Util.FolderImg + "/" + photo?.rutaFoto)
+        val f = File(Util.getFolder(this), photo?.rutaFoto)
 
          Picasso.get()
                 .load(f)

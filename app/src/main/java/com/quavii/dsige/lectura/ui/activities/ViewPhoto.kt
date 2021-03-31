@@ -3,7 +3,6 @@ package com.quavii.dsige.lectura.ui.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import android.view.View
@@ -63,13 +62,14 @@ class ViewPhoto : AppCompatActivity() {
             finish()
         }
     }
+
     private fun bindUI(id: Int) {
 
         imageViewPhoto = findViewById<View>(R.id.imageViewPhoto) as ImageView
         progressBarLoad = findViewById<View>(R.id.progressBarLoad) as ProgressBar
 
-        val photo: Photo? = photoOver!!.photoById(id)
-        val f = File(Environment.getExternalStorageDirectory(), Util.FolderImg + "/" + photo?.rutaFoto)
+        val photo: Photo = photoOver!!.photoById(id)
+        val f = File(Util.getFolder(this), photo.rutaFoto)
 
         Picasso.get()
                 .load(f)
@@ -78,10 +78,7 @@ class ViewPhoto : AppCompatActivity() {
                         progressBarLoad?.visibility = View.GONE
                     }
 
-                    override fun onError(e: Exception) {
-
-
-                    }
+                    override fun onError(e: Exception) {}
                 })
     }
 }

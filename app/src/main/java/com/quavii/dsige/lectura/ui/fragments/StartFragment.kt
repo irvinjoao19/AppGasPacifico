@@ -16,7 +16,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.button.MaterialButton
@@ -52,12 +52,12 @@ class StartFragment : Fragment() {
     lateinit var folder: File
     lateinit var image: File
 
-    var online: Int = 0
-    var usuarioId: Int = 0
-    var nameImg: String = ""
-    var direction: String = ""
-    var nameServices: String = ""
-    var stateServices: Int = 0
+    private var online: Int = 0
+    private var usuarioId: Int = 0
+    private var nameImg: String = ""
+    private var direction: String = ""
+    private var nameServices: String = ""
+    private var stateServices: Int = 0
 
     private var param1: String? = null
     private var param2: String? = null
@@ -76,7 +76,7 @@ class StartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        startViewModel = ViewModelProviders.of(this).get(StartViewModel::class.java)
+        startViewModel = ViewModelProvider(this).get(StartViewModel::class.java)
         startViewModel.initialRealm()
         val l = startViewModel.getLogin()
         usuarioId = l.iD_Operario
@@ -152,7 +152,7 @@ class StartFragment : Fragment() {
         dialog.show()
 
         val count = startViewModel.getLecturaOnCount(1, 0)
-        val valor: Int? = count!!.toInt()
+        val valor: Int = count!!.toInt()
         if (valor != 0) {
             textViewCountNormales.visibility = View.VISIBLE
             textViewCountNormales.text = valor.toString()
@@ -166,7 +166,7 @@ class StartFragment : Fragment() {
         }
 
         val countObservada = startViewModel.getLecturaOnCount(1, 1)
-        val valorObservada: Int? = countObservada!!.toInt()
+        val valorObservada: Int = countObservada!!.toInt()
         if (valorObservada != 0) {
             textViewCountObservadas.visibility = View.VISIBLE
             textViewCountObservadas.text = valorObservada.toString()
@@ -180,7 +180,7 @@ class StartFragment : Fragment() {
         }
 
         val countReclamos = startViewModel.getLecturaReclamoOnCount(1, "9")
-        val valorReclamos: Int? = countReclamos!!.toInt()
+        val valorReclamos: Int = countReclamos!!.toInt()
         if (valorReclamos != 0) {
             textViewCountReclamos.visibility = View.VISIBLE
             textViewCountReclamos.text = valorReclamos.toString()
@@ -217,7 +217,7 @@ class StartFragment : Fragment() {
     }
 
     private fun dialogInicioTrabajo(code: Int) {
-        val dialog = MaterialAlertDialogBuilder(context)
+        val dialog = MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Mensaje")
                 .setMessage(String.format("%s", "Deseas Iniciar TRABAJO ?. Debes tomarte una Selfie"))
                 .setPositiveButton("Tomar Selfie") { dialog, _ ->
@@ -234,7 +234,7 @@ class StartFragment : Fragment() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", 1)
         if (takePictureIntent.resolveActivity(context!!.packageManager) != null) {
-            folder = Util.getFolder()
+            folder = Util.getFolder(context!!)
             nameImg = Util.getFechaActualRepartoPhoto(usuarioId, "INICIO") + ".jpg"
             image = File(folder, nameImg)
             direction = "$folder/$nameImg"
@@ -298,7 +298,7 @@ class StartFragment : Fragment() {
                 gps.showAlert(context!!)
             } else {
                 val photos: RealmList<Photo> = RealmList()
-                val photo: Photo? = Photo(startViewModel.getPhotoIdentity(), 0, usuarioId, nameImg, Util.getFechaActual(), 11, 1, gps.latitude.toString(), gps.longitude.toString())
+                val photo = Photo(startViewModel.getPhotoIdentity(), 0, usuarioId, nameImg, Util.getFechaActual(), 11, 1, gps.latitude.toString(), gps.longitude.toString())
                 photos.add(photo)
                 val registro = Registro(startViewModel.getRegistroIdentity(), usuarioId, usuarioId, Util.getFechaActual(), gps.latitude.toString(), gps.longitude.toString(), 11, 1, "INICIO", nameImg, photos)
                 startViewModel.saveZonaPeligrosa(registro)
@@ -322,7 +322,7 @@ class StartFragment : Fragment() {
                 gps.showAlert(context!!)
             } else {
                 val photos: RealmList<Photo> = RealmList()
-                val photo: Photo? = Photo(startViewModel.getPhotoIdentity(), 0, usuarioId, nameImg, Util.getFechaActual(), tipo, 1, gps.latitude.toString(), gps.longitude.toString())
+                val photo = Photo(startViewModel.getPhotoIdentity(), 0, usuarioId, nameImg, Util.getFechaActual(), tipo, 1, gps.latitude.toString(), gps.longitude.toString())
                 photos.add(photo)
                 val registro = Registro(startViewModel.getRegistroIdentity(), usuarioId, usuarioId, Util.getFechaActual(), gps.latitude.toString(), gps.longitude.toString(), tipo, 1, "INICIO", "", photos)
                 startViewModel.saveZonaPeligrosa(registro)
@@ -330,7 +330,7 @@ class StartFragment : Fragment() {
                     tipoLectura()
                 } else {
                     if (online == 1) {
-                        startViewModel.sendSelfie(tipo, "INICIO")
+                        startViewModel.sendSelfie(context!!, tipo, "INICIO")
                     } else {
                         val intent = Intent(context!!, SuministroActivity::class.java)
                         intent.putExtra("estado", stateServices)
@@ -345,13 +345,13 @@ class StartFragment : Fragment() {
     }
 
     private fun message() {
-        startViewModel.error.observe(this, androidx.lifecycle.Observer<String> { s ->
+        startViewModel.error.observe(viewLifecycleOwner, { s ->
             if (s != null) {
                 Util.dialogMensaje(context!!, "Mensaje", s)
             }
         })
 
-        startViewModel.success.observe(this, androidx.lifecycle.Observer<String> { s ->
+        startViewModel.success.observe(viewLifecycleOwner, { s ->
             if (s != null) {
                 val intent = Intent(context!!, SuministroActivity::class.java)
                 intent.putExtra("estado", stateServices)

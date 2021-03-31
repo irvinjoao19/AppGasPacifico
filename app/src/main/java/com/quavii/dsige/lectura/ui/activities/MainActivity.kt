@@ -29,8 +29,6 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.google.gson.Gson
 import com.quavii.dsige.lectura.BuildConfig
 import com.quavii.dsige.lectura.R
@@ -307,7 +305,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         override fun doInBackground(vararg integers: Int?): String? {
-            var result: String? = null
+            var result: String?
             val operarioId = integers[0]
             Realm.getDefaultInstance().use { realm ->
                 result = migration(realm, operarioId!!)
@@ -335,7 +333,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val mCall = migrationInterface.getMigration(operarioId, Util.getVersion(this@MainActivity))
 
         try {
-            val response = mCall.execute()!!
+            val response = mCall.execute()
             if (response.code() == 200) {
                 val migracion: Migration? = response.body() as Migration
                 if (migracion != null) {

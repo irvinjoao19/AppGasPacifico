@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 public class HelperDialog {
 
@@ -90,8 +91,9 @@ public class HelperDialog {
         return String.format("Firm_%s_%s_%s.jpg", id, tipo, fechaActual);
     }
 
-    public static File getFolder() {
-        File folder = new File(Environment.getExternalStorageDirectory(), FolderImg);
+    public static File getFolder(Context context) {
+        File folder = new File(Objects.requireNonNull(context.getExternalFilesDir(null)).getAbsolutePath());
+//        File folder = new File(Environment.getExternalStorageDirectory(), FolderImg);
         if (!folder.exists()) {
             if (folder.mkdirs()) {
                 Log.i("TAG", "FOLDER CREADO");

@@ -8,7 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.quavii.dsige.lectura.R
 import com.quavii.dsige.lectura.data.model.RegistroRecibo
 import com.quavii.dsige.lectura.data.viewModel.RepartoViewModel
@@ -22,7 +22,7 @@ class FirmRepartoActivity : AppCompatActivity(), View.OnClickListener {
         when (v.id) {
             R.id.fabFirma -> {
                 if (paintView.validDraw()) {
-                    val name = paintView.save(repartoId, 5, "")
+                    val name = paintView.save(this, repartoId, 5, "")
                     repartoViewModel.getUpdateRegistro(repartoId, name)
                 } else {
                     repartoViewModel.setError("Debes de Firmar.")
@@ -63,7 +63,7 @@ class FirmRepartoActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun bindUI() {
-        repartoViewModel = ViewModelProviders.of(this).get(RepartoViewModel::class.java)
+        repartoViewModel = ViewModelProvider(this).get(RepartoViewModel::class.java)
         repartoViewModel.initialRealm()
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)

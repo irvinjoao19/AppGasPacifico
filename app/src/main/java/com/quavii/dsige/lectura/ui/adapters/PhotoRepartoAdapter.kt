@@ -40,7 +40,7 @@ class PhotoRepartoAdapter(private var listener: OnItemClickListener.PhotoListene
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(photo: Photo, listener: OnItemClickListener.PhotoListener) = with(itemView) {
-            val f = File(Environment.getExternalStorageDirectory(), Util.FolderImg + "/" + photo.rutaFoto)
+            val f = File(Util.getFolder(itemView.context), photo.rutaFoto)
             Picasso.get()
                     .load(f)
                     .into(imageViewPhoto,

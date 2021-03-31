@@ -10,8 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -31,10 +30,8 @@ class SendFragment : Fragment() {
     lateinit var sendAdapter: SendAdapter
 
     lateinit var builder: AlertDialog.Builder
-    var dialog: AlertDialog? = null
-
+    private var dialog: AlertDialog? = null
     lateinit var envioViewModel: EnvioViewModel
-
 
     private var param1: String? = null
     private var param2: String? = null
@@ -53,7 +50,7 @@ class SendFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        envioViewModel = ViewModelProviders.of(this).get(EnvioViewModel::class.java)
+        envioViewModel = ViewModelProvider(this).get(EnvioViewModel::class.java)
         envioViewModel.initialRealm()
         bindUI()
         message()
@@ -91,12 +88,12 @@ class SendFragment : Fragment() {
     }
 
     private fun confirmSend(count: Int) {
-        val materialDialog = MaterialAlertDialogBuilder(context)
+        val materialDialog = MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Mensaje")
                 .setMessage(String.format("%s", "Antes de enviar asegurate de contar con internet !.\nDeseas enviar los Registros ?."))
                 .setPositiveButton("Aceptar") { dialog, _ ->
                     if (count > 0) {
-                        envioViewModel.sendData()
+                        envioViewModel.sendData(context!!)
                         load()
                     } else {
                         HelperDialog.MensajeOk(context, "Mensaje", "No cuentas con ningún Registro")
@@ -122,7 +119,7 @@ class SendFragment : Fragment() {
     }
 
     private fun message() {
-        envioViewModel.error.observe(this, Observer<String> { s ->
+        envioViewModel.error.observe(viewLifecycleOwner, { s ->
             if (s != null) {
                 if (dialog != null) {
                     if (dialog!!.isShowing) {
@@ -133,7 +130,7 @@ class SendFragment : Fragment() {
             }
         })
 
-        envioViewModel.success.observe(this, Observer<String> { s ->
+        envioViewModel.success.observe(viewLifecycleOwner, { s ->
             if (s != null) {
                 if (dialog != null) {
                     if (dialog!!.isShowing) {

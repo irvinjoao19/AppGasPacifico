@@ -169,14 +169,9 @@ public class PaintView extends View {
         return (int) (x + y);
     }
 
-    public String save(int id, int tipo, String f) {
+    public String save(Context context, int id, int tipo, String f) {
 
-        File folder = HelperDialog.getFolder();
-        if (!folder.exists()) {
-            if (folder.mkdirs()) {
-                Log.i("TAG", "FOLDER CREATED");
-            }
-        }
+        File folder = HelperDialog.getFolder(context);
         String nameImg;
         if (f.isEmpty()) {
             nameImg = HelperDialog.getDateFirmReparto(id, tipo);

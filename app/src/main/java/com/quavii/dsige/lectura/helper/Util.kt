@@ -46,31 +46,30 @@ object Util {
     val KEY_UPDATE_NAME = "name"
 
     private var FechaActual: String? = ""
-    private var date: Date? = null
 
     private const val img_height_default = 800
     private const val img_width_default = 600
 
     fun getFecha(): String {
-        date = Date()
+      val  date = Date()
         @SuppressLint("SimpleDateFormat") val format = SimpleDateFormat("dd/MM/yyyy")
         return format.format(date)
     }
 
     fun getFechaActual(): String {
-        date = Date()
+        val date = Date()
         @SuppressLint("SimpleDateFormat") val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         return format.format(date)
     }
 
     fun getHoraActual(): String {
-        date = Date()
+        val date = Date()
         @SuppressLint("SimpleDateFormat") val format = SimpleDateFormat("HH:mm:ss aaa")
         return format.format(date)
     }
 
     fun getFechaEditar(): String? {
-        date = Date()
+        val date = Date()
         @SuppressLint("SimpleDateFormat") val format = SimpleDateFormat("ddMMyyyy_HHmmssSSSS")
         FechaActual = format.format(date)
         return FechaActual
@@ -126,8 +125,8 @@ object Util {
     }
 
 
-    fun getFolder(): File {
-        val folder = File(Environment.getExternalStorageDirectory(), FolderImg)
+    fun getFolder(context: Context): File {
+        val folder = File(context.getExternalFilesDir(null)!!.absolutePath)
         if (!folder.exists()) {
             val success = folder.mkdirs()
             if (!success) {
@@ -137,13 +136,6 @@ object Util {
         return folder
     }
 
-    fun getFolderPhoto(): File {
-        val folder = File(Environment.getExternalStorageDirectory(), FolderImg)
-        if (!folder.exists()) {
-            folder.mkdirs()
-        }
-        return folder
-    }
     // TODO SOBRE FOTO
 
     // NORMAL
